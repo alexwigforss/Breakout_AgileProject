@@ -1,4 +1,5 @@
-﻿using static System.Console;
+﻿using System.Reflection.Emit;
+using static System.Console;
 namespace Breakout
 {
     // Integral vektor för position och hastighet i x & y-led
@@ -12,151 +13,93 @@ namespace Breakout
 
     internal class Program
     {
-        static int margin = 20;
-        static int windowWidth = 80;
-        static int windowHeight = 40;
         static void NotYetImplemented()
         {
             WriteLine("Not yet implemented, try another command");
         }
         static void Main(string[] args)
         {
-            SetWindowSize(80, 40);
-            SetBufferSize(80, 40);
-            CursorVisible = false;
+            GameMenu();
 
-            WriteLine("============= BREAKDOWN ==============\n");
-            WriteLine("(P)lay the game\n\n" +
-                "(Q)uit the program\n\n" +
-                "(H)elp\n\n" +
-                "High(S)core\n");
-            string input="";    
-            do
+            static void GameMenu()
             {
-                input=ReadLine();
-                if (input.ToLower() == "p")
+                SetupConsole();
+                Clear();
+                SetCursorPosition(0, 0);
+                WriteLine("============= BREAKDOWN ==============\n");
+                WriteLine("(P)lay the game\n\n" +
+                    "(Q)uit the program\n\n" +
+                    "(H)elp\n\n" +
+                    "High(S)core\n");
+                string input = "";
+                do
                 {
-                    PlayerBoard bräda = new PlayerBoard();
-                    bräda.PrintBoard();
-                    Game(bräda);
-                }
-                else if (input.ToLower() == "q")
-                    break;
-                else if (input.ToLower() == "h")
-                    NotYetImplemented();
-
-                else if (input.ToLower() == "s")
-                    NotYetImplemented();
-
-            } while (true);
-        }
-        //läser knapptryckningar för brädet
-        static void Game(PlayerBoard p)
-        {
-            while (true)
-            {
-                if (KeyAvailable)
-                {
-                    if (ReadKey().Key == ConsoleKey.RightArrow)
+                    input = ReadLine();
+                    if (input.ToLower() == "p")
                     {
-                        p.MoveRight();
+                        PlayerBoard bräda = new PlayerBoard();
+
+                        Game(bräda);
                     }
-                }
-                else if (KeyAvailable)
+                    else if (input.ToLower() == "q")
+                        System.Environment.Exit(0);
+                        //break;
+                    else if (input.ToLower() == "h")
+                        NotYetImplemented();
+
+                    else if (input.ToLower() == "s")
+                        NotYetImplemented();
+
+                } while (true);
+            }
+
+            static void Game(PlayerBoard p)
+            {
+                int lives = 3;
+                int score = 10000;
+                bool running = true;
+                //SetupConsole();
+                Clear();
+
+                while (running)
                 {
-                    if (ReadKey().Key == ConsoleKey.LeftArrow)
+                    //läser knapptryckningar för brädet
+                    if (Console.KeyAvailable)
                     {
-                        p.MoveLeft();
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        switch (key.Key)
+                        {
+                            case ConsoleKey.LeftArrow:
+                                p.MoveLeft();
+                                break;
+                            case ConsoleKey.RightArrow:
+                                p.MoveRight();
+                                break;
+                            case ConsoleKey.Escape:
+                                GameMenu();
+                                break;
+                            default:
+                                break;
+                        }
                     }
+
+                    p.PrintBoard();
+                    GameBoard.DrawFrame();
+                    GameBoard.DrawBrickZoneCorners();
+                    GameBoard.DrawStats(lives, score);
                 }
             }
-            int lives = 3;
-            int score = 10000;
-
-            SetupConsole();
-
-            while (true)
-            {
-                DrawFrame();
-                DrawBrickZoneCorners();
-                DrawStats(lives, score);
-            }
         }
 
-        private static void DrawStats(int lives, int score)
-        {
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 3, 2);
-            Write($"LIVES: {lives}");
-
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 3, 4);
-            Write($"SCORE: {score}");
-        }
-
-        private static void DrawBrickZoneCorners()
-        {
-            SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x, GameBoard.TopLeftBrickZoneCorner.y);
-            Write("X");
-
-            SetCursorPosition(GameBoard.BottomRightBrickZoneCorner.x, GameBoard.BottomRightBrickZoneCorner.y);
-            Write("X");
-        }
-
-        private static void DrawFrame()
-        {
-            SetCursorPosition(0, 0);
-            Write("┌");
-
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 1, 0);
-            Write("┬");
-
-            SetCursorPosition(GameBoard.BottomRightCorner.x + margin, 0);
-            Write("┐");
-
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 1, GameBoard.BottomRightCorner.y);
-            Write("└");
-
-            SetCursorPosition(GameBoard.BottomRightCorner.x + margin, GameBoard.BottomRightCorner.y);
-            Write("┘");
-
-            for (int i = 1; i < GameBoard.BottomRightCorner.y; i++)
-            {
-                SetCursorPosition(GameBoard.BottomRightCorner.x + 1, i);
-                Write("│");
-                SetCursorPosition(0, i);
-                Write("│");
-                SetCursorPosition(GameBoard.BottomRightCorner.x + margin, i);
-                Write("│");
-            }
-            for (int i = 1; i <= GameBoard.BottomRightCorner.x; i++)
-            {
-                SetCursorPosition(i, 0);
-                Write("─");
-            }
-            for (int i = GameBoard.BottomRightCorner.x + 2; i < GameBoard.BottomRightCorner.x + margin; i++)
-            {
-                SetCursorPosition(i, 0);
-                Write("─");
-                SetCursorPosition(i, GameBoard.BottomRightCorner.y);
-                Write("─");
-            }
-        }
+        static int windowWidth = 80;
+        static int windowHeight = 40;
 
         private static void SetupConsole()
         {
             SetWindowSize(1, 1);
-            SetBufferSize(windowWidth + margin, windowHeight);
-            SetWindowSize(windowWidth + margin, windowHeight);
+            SetBufferSize(windowWidth + GameBoard.margin, windowHeight);
+            SetWindowSize(windowWidth + GameBoard.margin, windowHeight);
             CursorVisible = false;
         }
     }
 }
-/*
-┌───────────────────┬─────┐
-│                   │     │
-│                   │     │
-│                   │     │
-│                   │     │
-│                   │     │
-│                   │     │
-│                   └─────┘
- */
