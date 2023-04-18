@@ -67,7 +67,7 @@ namespace Breakout
                 Obstacles.MakeObstacles();
 
                 timestep = new System.Timers.Timer();
-                timestep.Interval = 250;
+                timestep.Interval = 150;
                 timestep.Elapsed += TimerEventStep;
                 timestep.Start();
 

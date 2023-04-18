@@ -10,6 +10,7 @@ namespace Breakout
 
     public class Ball
     {
+        public static int hitPadIndex = 0;
         static int width = 80;
         static int height = 40;
         V2 xy;
@@ -58,7 +59,35 @@ namespace Breakout
                 speed.y *= -1;
             else if ((xy.y + speed.y >= height-5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
             {
-                speed.y *= -1;
+                hitPadIndex = xy.x - PlayerPad.CurrentFirstXPosition;
+                switch (hitPadIndex)
+                {
+                    case 0:
+                    case 1:
+                        speed = new V2(-2, -1);
+                        break;
+                    case 2:
+                    case 3:
+                        speed = new V2(-1, -1);
+                        break;
+                    case 4:
+                    case 5:
+                        speed = new V2(0, -1);
+                        break;
+                    case 6:
+                    case 7:
+                        speed = new V2(1, -1);
+                        break;
+                    case 8:
+                    case 9:
+                        speed = new V2(2, -1);
+                        break;
+                    default:
+                        hitPadIndex = 0;
+                        break;
+                }
+
+                //speed.y *= -1;
                 return false;
             }
             else if (xy.y + speed.y >= height)
@@ -83,8 +112,8 @@ namespace Breakout
         public void PrintSelf()
         {
             SetCursorPosition(xy.x, xy.y);
-            Write("O");
-            // Write(diffCount);
+            //Write("O");
+            Write(hitPadIndex);
         }
         public void PrintSelfClearTrail()
         {
