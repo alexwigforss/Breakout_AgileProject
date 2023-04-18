@@ -21,13 +21,16 @@ namespace Breakout
         //färgkod
         public string colour="white";
         //storlek
-        public static string visual = "▓▓▓▓▓▓"; //alt+178
-        public static string visualBroken = "▒▒▒▒▒▒"; //177
-        public static string visualFull = "██████"; //219
+        string VisualHealthState;
+        public static string dead = "      "; // borta 0 hp
+        public static string visual = "▓▓▓▓▓▓"; //alt+178 2hp
+        public static string visualBroken = "▒▒▒▒▒▒"; //177 1 hp
+        public static string visualFull = "██████"; //219 3hp
 
 
-        public Obstacles(int scorePoints, int hitPoints, int x, int y, string colour = "green")
+        public Obstacles(string VisualHealtState, int scorePoints, int hitPoints, int x, int y, string colour = "green")
         {
+            this.VisualHealthState = VisualHealtState;
             this.scorePoints = scorePoints;
             this.hitPoints = hitPoints;
             this.colour = colour;
@@ -40,7 +43,7 @@ namespace Breakout
             if (type == 1)
             {
                 this.scorePoints = 100;
-                this.hitPoints = 1;
+                this.hitPoints = 0;
                 this.colour = "green";
             }
             if (type == 2)
@@ -55,6 +58,7 @@ namespace Breakout
                 this.hitPoints = 3;
                 this.colour = "red";
             }
+
             this.xPosition = x;
             this.yPosition = y;
         }
@@ -67,15 +71,16 @@ namespace Breakout
 
             for (int j = 0; j < 3; j++)
             {
-                for (int i = 0; i < 13; i++)
+                for (int i = 0; i < 11; i++)
                 {
                     int type = random.Next(1, 4);
 
                     Obstacles o = new Obstacles(type, x, y);
                     hinder.Add(o);
-                    x += 6;
+                    x += 7;
                 }
-                y++;
+                //y++;
+                y = y + 2;
                 x = 1;
             }
         }
@@ -140,6 +145,9 @@ namespace Breakout
             foreach (Obstacles o in hinder)
             {
                 SetCursorPosition(o.xPosition, o.yPosition);
+               /* if(o.hitPoints == 0) {
+                    visual = "      ";
+                }*/
                 o.Visualize();
             }
         }
