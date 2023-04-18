@@ -12,8 +12,10 @@ namespace Breakout
         public V2(V2 xy) { this.x = xy.x; this.y = xy.y; }
     }
 
-    internal class Program
+    public class Program
     {
+        public static int lives = 3;
+        public static int score = 0;
         static int steps_scince_start;
         public static System.Timers.Timer timestep;
         static void NotYetImplemented()
@@ -46,7 +48,6 @@ namespace Breakout
                     }
                     else if (input.ToLower() == "q")
                         System.Environment.Exit(0);
-                        //break;
                     else if (input.ToLower() == "h")
                         NotYetImplemented();
 
@@ -58,7 +59,7 @@ namespace Breakout
 
             // GAME
             
-            static void Game(PlayerBoard p)
+             static void Game(PlayerBoard p)
             {
                 Ball b;
                 b = new Ball(new V2(5, 5), new V2(1, 1));
@@ -68,8 +69,6 @@ namespace Breakout
                 timestep.Elapsed += TimerEventStep;
                 timestep.Start();
 
-                int lives = 3;
-                int score = 10000;
                 bool running = true;
                 //SetupConsole();
                 Clear();
@@ -77,8 +76,6 @@ namespace Breakout
                 int sec = steps_scince_start;
                 b.PrintSelf();
 
-            // GAMELOOP
-            // GAMELOOP
             // GAMELOOP
                 while (running)
                 {
