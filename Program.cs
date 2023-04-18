@@ -63,8 +63,8 @@ namespace Breakout
             static void Game(PlayerPad p)
             {
                 Ball b;
-                b = new Ball(new V2(5, 5), new V2(1, 1));
                 Obstacles.MakeObstacles();
+                b = new Ball(new V2(28, 31), new V2(1, 1));
 
                 timestep = new System.Timers.Timer();
                 timestep.Interval = 150;
