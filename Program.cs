@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Emit;
+using System.Xml;
 using static System.Console;
 namespace Breakout
 {
@@ -42,7 +43,7 @@ namespace Breakout
                     input = ReadLine();
                     if (input.ToLower() == "p")
                     {
-                        PlayerBoard bräda = new PlayerBoard();
+                        PlayerPad bräda = new PlayerPad();
 
                         Game(bräda);
                     }
@@ -58,14 +59,14 @@ namespace Breakout
             }
 
             // GAME
-            
-             static void Game(PlayerBoard p)
+
+            static void Game(PlayerPad p)
             {
                 Ball b;
                 b = new Ball(new V2(5, 5), new V2(1, 1));
 
                 timestep = new System.Timers.Timer();
-                timestep.Interval = 100;
+                timestep.Interval = 250;
                 timestep.Elapsed += TimerEventStep;
                 timestep.Start();
 
@@ -76,7 +77,7 @@ namespace Breakout
                 int sec = steps_scince_start;
                 b.PrintSelf();
 
-            // GAMELOOP
+                // GAMELOOP
                 while (running)
                 {
                     //läser knapptryckningar för brädet
@@ -92,6 +93,7 @@ namespace Breakout
                                 p.MoveRight();
                                 break;
                             case ConsoleKey.Escape:
+                                ReInit();
                                 GameMenu();
                                 break;
                             default:
@@ -101,6 +103,9 @@ namespace Breakout
 
                     SetCursorPosition(75, 1);
                     Write(steps_scince_start);
+
+                    SetCursorPosition(75, 3);
+                    Write(PlayerPad.CurrentFirstXPosition);
 
                     p.PrintBoard();
                     GameBoard.DrawFrame();
@@ -116,20 +121,34 @@ namespace Breakout
                             if (lives > 0)
                             {
                                 lives--;
+
+                                int rowToClear = 39;
+                                SetCursorPosition(0, rowToClear);
+                                Write(new string(' ', WindowWidth));
                             }
                             else
                             {
+                                ReInit();
+                                //System.Timers.Timer timestep;
                                 GameMenu();
                             }
                         }
-                        else if(!died)
+                        else if (!died)
                         {
-                        sec = steps_scince_start;
-                        b.PrintSelfClearTrail();
+                            sec = steps_scince_start;
+                            b.PrintSelfClearTrail();
 
                         }
 
                     }
+                }
+
+                static void ReInit()
+                {
+                    score = 0;
+                    lives = 3;
+                    steps_scince_start = 0;
+                    timestep.Stop();
                 }
             }
         }

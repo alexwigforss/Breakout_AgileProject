@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace Breakout
 {
-    public class PlayerBoard
+    public class PlayerPad
     {
         static int leftWall = 0;
         static int rightWall = 80;
-        static string board = "==========";
+        static string board = "▀▀▀▀██▀▀▀▀";
         static int currentFirstXPosition = 35;
+        public static int CurrentFirstXPosition { get => currentFirstXPosition; set => currentFirstXPosition = value; }
+        public static string Board { get => board; set => board = value; }
+
         public void PrintBoard()
         {
             SetCursorPosition(currentFirstXPosition, 35);

@@ -56,6 +56,11 @@ namespace Breakout
                 speed.x *= -1;
             if (xy.y + speed.y < 0)
                 speed.y *= -1;
+            else if ((xy.y + speed.y >= height-5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
+            {
+                speed.y *= -1;
+                return false;
+            }
             else if (xy.y + speed.y >= height)
             {
                 return true;
