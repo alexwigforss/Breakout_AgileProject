@@ -40,8 +40,8 @@ namespace Breakout
 
         public static void DrawFrame()
         {
-            SetCursorPosition(0, 0);
-            Write("┌");
+            //SetCursorPosition(0, 0);
+            //Write("┌");
 
             SetCursorPosition(GameBoard.BottomRightCorner.x + 1, 0);
             Write("┬");
@@ -59,15 +59,15 @@ namespace Breakout
             {
                 SetCursorPosition(GameBoard.BottomRightCorner.x + 1, i);
                 Write("│");
-                SetCursorPosition(0, i);
-                Write("│");
+                //SetCursorPosition(0, i);
+                //Write("│");
                 SetCursorPosition(GameBoard.BottomRightCorner.x + margin, i);
                 Write("│");
             }
             for (int i = 1; i <= GameBoard.BottomRightCorner.x; i++)
             {
-                SetCursorPosition(i, 0);
-                Write("─");
+                //SetCursorPosition(i, 0);
+                //Write("─");
             }
             for (int i = GameBoard.BottomRightCorner.x + 2; i < GameBoard.BottomRightCorner.x + margin; i++)
             {

@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using System;
+using System.Reflection.Emit;
 using static System.Console;
 namespace Breakout
 {
@@ -13,6 +14,8 @@ namespace Breakout
 
     internal class Program
     {
+        static int steps_scince_start;
+        public static System.Timers.Timer timestep;
         static void NotYetImplemented()
         {
             WriteLine("Not yet implemented, try another command");
@@ -53,14 +56,30 @@ namespace Breakout
                 } while (true);
             }
 
+            // GAME
+            
             static void Game(PlayerBoard p)
             {
+                Ball b;
+                b = new Ball(new V2(5, 5), new V2(1, 1));
+
+                timestep = new System.Timers.Timer();
+                timestep.Interval = 100;
+                timestep.Elapsed += TimerEventStep;
+                timestep.Start();
+
                 int lives = 3;
                 int score = 10000;
                 bool running = true;
                 //SetupConsole();
                 Clear();
 
+                int sec = steps_scince_start;
+                b.PrintSelf();
+
+            // GAMELOOP
+            // GAMELOOP
+            // GAMELOOP
                 while (running)
                 {
                     //läser knapptryckningar för brädet
@@ -83,10 +102,37 @@ namespace Breakout
                         }
                     }
 
+                    SetCursorPosition(75, 1);
+                    Write(steps_scince_start);
+
                     p.PrintBoard();
                     GameBoard.DrawFrame();
                     GameBoard.DrawBrickZoneCorners();
                     GameBoard.DrawStats(lives, score);
+
+                    if (steps_scince_start > sec)
+                    {
+                        bool died = b.Move();
+                        if (died)
+                        {
+                            b = new Ball(new V2(5, 5), new V2(1, 1));
+                            if (lives > 0)
+                            {
+                                lives--;
+                            }
+                            else
+                            {
+                                GameMenu();
+                            }
+                        }
+                        else if(!died)
+                        {
+                        sec = steps_scince_start;
+                        b.PrintSelfClearTrail();
+
+                        }
+
+                    }
                 }
             }
         }
@@ -100,6 +146,10 @@ namespace Breakout
             SetBufferSize(windowWidth + GameBoard.margin, windowHeight);
             SetWindowSize(windowWidth + GameBoard.margin, windowHeight);
             CursorVisible = false;
+        }
+        public static void TimerEventStep(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            steps_scince_start++;
         }
     }
 }
