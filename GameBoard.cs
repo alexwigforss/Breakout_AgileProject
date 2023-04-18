@@ -22,19 +22,19 @@ namespace Breakout
 
         public static void DrawStats(int lives, int score)
         {
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 3, 2);
+            SetCursorPosition(BottomRightCorner.x + 3, 2);
             Write($"LIVES: {lives}");
 
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 3, 4);
+            SetCursorPosition(BottomRightCorner.x + 3, 4);
             Write($"SCORE: {score}");
         }
 
         public static void DrawBrickZoneCorners()
         {
-            SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x, GameBoard.TopLeftBrickZoneCorner.y);
+            SetCursorPosition(TopLeftBrickZoneCorner.x, TopLeftBrickZoneCorner.y);
             Write("X");
 
-            SetCursorPosition(GameBoard.BottomRightBrickZoneCorner.x, GameBoard.BottomRightBrickZoneCorner.y);
+            SetCursorPosition(BottomRightBrickZoneCorner.x, BottomRightBrickZoneCorner.y);
             Write("X");
         }
 
@@ -43,37 +43,37 @@ namespace Breakout
             //SetCursorPosition(0, 0);
             //Write("┌");
 
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 1, 0);
+            SetCursorPosition(BottomRightCorner.x + 1, 0);
             Write("┬");
 
-            SetCursorPosition(GameBoard.BottomRightCorner.x + margin, 0);
+            SetCursorPosition(BottomRightCorner.x + margin, 0);
             Write("┐");
 
-            SetCursorPosition(GameBoard.BottomRightCorner.x + 1, GameBoard.BottomRightCorner.y);
+            SetCursorPosition(BottomRightCorner.x + 1, BottomRightCorner.y);
             Write("└");
 
-            SetCursorPosition(GameBoard.BottomRightCorner.x + margin, GameBoard.BottomRightCorner.y);
+            SetCursorPosition(BottomRightCorner.x + margin, BottomRightCorner.y);
             Write("┘");
 
-            for (int i = 1; i < GameBoard.BottomRightCorner.y; i++)
+            for (int i = 1; i < BottomRightCorner.y; i++)
             {
-                SetCursorPosition(GameBoard.BottomRightCorner.x + 1, i);
+                SetCursorPosition(BottomRightCorner.x + 1, i);
                 Write("│");
                 //SetCursorPosition(0, i);
                 //Write("│");
-                SetCursorPosition(GameBoard.BottomRightCorner.x + margin, i);
+                SetCursorPosition(BottomRightCorner.x + margin, i);
                 Write("│");
             }
-            for (int i = 1; i <= GameBoard.BottomRightCorner.x; i++)
+            for (int i = 1; i <= BottomRightCorner.x; i++)
             {
                 //SetCursorPosition(i, 0);
                 //Write("─");
             }
-            for (int i = GameBoard.BottomRightCorner.x + 2; i < GameBoard.BottomRightCorner.x + margin; i++)
+            for (int i = BottomRightCorner.x + 2; i < BottomRightCorner.x + margin; i++)
             {
                 SetCursorPosition(i, 0);
                 Write("─");
-                SetCursorPosition(i, GameBoard.BottomRightCorner.y);
+                SetCursorPosition(i, BottomRightCorner.y);
                 Write("─");
             }
         }
