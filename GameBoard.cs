@@ -32,8 +32,8 @@ namespace Breakout
         public static void DrawBrickZoneCorners()
         {
             SetCursorPosition(TopLeftBrickZoneCorner.x, TopLeftBrickZoneCorner.y);
-            Write("X");
-
+            Obstacles.PlaceObstacles();
+            //skriv ut
             SetCursorPosition(BottomRightBrickZoneCorner.x, BottomRightBrickZoneCorner.y);
             Write("X");
         }

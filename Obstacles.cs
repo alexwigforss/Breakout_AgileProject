@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Breakout
 {
@@ -14,15 +16,40 @@ namespace Breakout
         //träffar för att ta sönder
         int hitPoints = 1;
         //färgkod
-        public static string colourCode = "u001b[31m";
+        public string colour;
         //storlek
-        public static string visual="_______\n" +
-                                   "|_______|";
+        public static string visual = "▓▓▓▓▓▓";
+        
 
-        Obstacles[] hinder = new Obstacles[10];
+        public Obstacles(int scorePoints, int hitPoints, string colour = "green")
+        {
+            this.scorePoints = scorePoints;
+            this.hitPoints = hitPoints;
+            this.colour = colour;
+        }
+        static Obstacles[] hinder = new Obstacles[] { new(100, 1), new(500, 3, "blue"), new(100, 1), new(500, 3, "red"), new(100, 1), new(500, 3, "blue"), new(100, 1), new(500, 3, "blue"), new(100, 1), new(500, 3, "red")};
 
         //printobstacle
-        
+        void Visualize()
+        {
+            switch (colour) 
+            { 
+            case "blue":
+                ForegroundColor = ConsoleColor.Blue;
+                break;
+            case "red":
+                ForegroundColor = ConsoleColor.Red;
+                break;
+            case "green":
+                ForegroundColor = ConsoleColor.Green;
+                break;
+            default: 
+                    break;
+            }
+            Write(visual);
+            ForegroundColor = ConsoleColor.White;
+        }
+
         //minska träffantal vid träff (metod)
         public void ballHit() 
         { 
@@ -38,18 +65,20 @@ namespace Breakout
         }
 
         //metod, om träffantal == 0 ge +1 liv
-        public static void CheckObstacleEvent()
+        public void CheckObstacleEvent()
         {
-            if(colourCode== "u001b[31m")
+            if(colour== "red")
             {
                 Program.lives++;
             }
         }
-        public static void PrintObstacles()
+        public static void PlaceObstacles()
         {
-            SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x, GameBoard.TopLeftBrickZoneCorner.y); Write(visual);
-            SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x+2, GameBoard.TopLeftBrickZoneCorner.y); Write(visual);
-            SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x+4, GameBoard.TopLeftBrickZoneCorner.y); Write(visual);
+                SetCursorPosition(GameBoard.TopLeftBrickZoneCorner.x , GameBoard.TopLeftBrickZoneCorner.y);
+            foreach (Obstacles o in hinder)
+                o.Visualize();
+            
+            
         }
     }
 }
