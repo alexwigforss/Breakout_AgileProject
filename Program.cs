@@ -48,7 +48,7 @@ namespace Breakout
                         Game(bräda);
                     }
                     else if (input.ToLower() == "q")
-                        System.Environment.Exit(0);
+                        Environment.Exit(0);
                     else if (input.ToLower() == "h")
                         NotYetImplemented();
 
@@ -64,7 +64,7 @@ namespace Breakout
             {
                 Ball b;
                 Obstacles.MakeObstacles();
-                b = new Ball(new V2(28, 31), new V2(1, 1));
+                b = new Ball(new V2(29, 31), new V2(1, 1));
 
                 timestep = new System.Timers.Timer();
                 timestep.Interval = 150;
@@ -122,7 +122,6 @@ namespace Breakout
                             if (lives > 0)
                             {
                                 lives--;
-
                                 int rowToClear = 39;
                                 SetCursorPosition(0, rowToClear);
                                 Write(new string(' ', WindowWidth));
@@ -130,7 +129,6 @@ namespace Breakout
                             else
                             {
                                 ReInit();
-                                //System.Timers.Timer timestep;
                                 GameMenu();
                             }
                         }
@@ -146,6 +144,7 @@ namespace Breakout
 
                 static void ReInit()
                 {
+                    PlayerPad.CurrentFirstXPosition = 35;
                     score = 0;
                     lives = 3;
                     steps_scince_start = 0;

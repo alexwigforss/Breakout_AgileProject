@@ -57,7 +57,7 @@ namespace Breakout
                 speed.x *= -1;
             if (xy.y + speed.y < 0)
                 speed.y *= -1;
-            else if ((xy.y + speed.y >= height-5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
+            else if ((xy.y + speed.y == height-5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
             {
                 hitPadIndex = xy.x - PlayerPad.CurrentFirstXPosition;
                 switch (hitPadIndex)
@@ -86,8 +86,6 @@ namespace Breakout
                         hitPadIndex = 0;
                         break;
                 }
-
-                //speed.y *= -1;
                 return false;
             }
             else if (xy.y + speed.y >= height)
@@ -112,8 +110,8 @@ namespace Breakout
         public void PrintSelf()
         {
             SetCursorPosition(xy.x, xy.y);
-            //Write("O");
-            Write(hitPadIndex);
+            Write("O");
+            // Write(hitPadIndex);
         }
         public void PrintSelfClearTrail()
         {
