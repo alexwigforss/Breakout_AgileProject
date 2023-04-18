@@ -19,10 +19,6 @@ namespace Breakout
         public static int score = 0;
         static int steps_scince_start;
         public static System.Timers.Timer timestep;
-        static void NotYetImplemented()
-        {
-            WriteLine("Not yet implemented, try another command");
-        }
         static void Main(string[] args)
         {
             GameMenu();
@@ -32,28 +28,23 @@ namespace Breakout
                 SetupConsole();
                 Clear();
                 SetCursorPosition(0, 0);
-                WriteLine("============= BREAKDOWN ==============\n");
-                WriteLine("(P)lay the game\n\n" +
-                    "(Q)uit the program\n\n" +
-                    "(H)elp\n\n" +
-                    "High(S)core\n");
                 string input = "";
+                Welcome();
                 do
                 {
+                    Write("> ");
                     input = ReadLine();
                     if (input.ToLower() == "p")
                     {
                         PlayerPad bräda = new PlayerPad();
-
                         Game(bräda);
                     }
                     else if (input.ToLower() == "q")
                         Environment.Exit(0);
                     else if (input.ToLower() == "h")
-                        NotYetImplemented();
-
+                        HelpMenu();
                     else if (input.ToLower() == "s")
-                        NotYetImplemented();
+                        WriteLine("Not yet implemented, try another command");
 
                 } while (true);
             }
@@ -166,6 +157,44 @@ namespace Breakout
         public static void TimerEventStep(Object source, System.Timers.ElapsedEventArgs e)
         {
             steps_scince_start++;
+        }
+
+        static void Welcome() 
+        { 
+            WriteLine("=============== BREAKDOWN ===============\n\n"+
+                      "(P)lay\n\n" +
+                      "(Q)uit\n\n" +
+                      "(H)elp\n\n" +
+                      "High(S)core\n");
+        }
+
+        private static void HelpMenu()
+        {
+            Clear();
+            WriteLine("\n======== NAVIGATING THE MENU ============\n\n" +
+                "To execute the menu commands, type the corresponding letter and press 'enter':\n" +
+                "Type 'P' and 'enter' to play the game\n" +
+                "Type 'S' and 'enter' to see the highscore list\n" +
+                "Type 'Q' and 'enter' to quit the program\n" +
+                "Type 'H' and 'enter' to view this information\n\n" +
+                "=============== GAMEPLAY ================\n\n" +
+                "Type 'p' and press 'enter' to start the game. \n" +
+                "   Control the paddle att the bottom of the screen with left and right arrow. \n" +
+                "   Use the ball to break the obstacles to score points and clear the level. \n" +
+                "You start with three balls, if you miss a ball and it goes past the paddle you lose the ball.\n" +
+                "   Some obstacles give you an extra ball when they break.\n" +
+                "   The game ends when you lose your last ball.\n" +
+                "Press 'esc' to end the game and return to Start Menu. \n\n" +
+                "=============== HIGHSCORE ===============\n\n" +
+                "Type 's' and press 'enter' to view the Highscore list. \n" +
+                "   The players with the three best scores can be seen on the screen.\n" +
+                "You score points by breaking obstacles and collecting items.\n" +
+                "   Some obstacles are worth more points than others.\n" +
+                "If you score higher than previous players you can add your name to the list.\n\n" +
+                "Press any key to return to the Start Menu");
+            ReadKey();
+            Clear();
+            Welcome();
         }
     }
 }
