@@ -33,6 +33,7 @@ namespace Breakout
         {
             SetCursorPosition(TopLeftBrickZoneCorner.x, TopLeftBrickZoneCorner.y);
             Obstacles.PlaceObstacles();
+
             //skriv ut
             SetCursorPosition(BottomRightBrickZoneCorner.x, BottomRightBrickZoneCorner.y);
             Write("X");

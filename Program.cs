@@ -64,6 +64,7 @@ namespace Breakout
             {
                 Ball b;
                 b = new Ball(new V2(5, 5), new V2(1, 1));
+                Obstacles.MakeObstacles();
 
                 timestep = new System.Timers.Timer();
                 timestep.Interval = 250;
