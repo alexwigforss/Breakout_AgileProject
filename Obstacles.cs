@@ -49,7 +49,7 @@ namespace Breakout
             if (type <= 40)
             {
                 this.scorePoints = 100;
-                this.hitPoints = 0;
+                this.hitPoints = 1;
                 this.colour = "green";
             }
             else if (type > 40 && type < 90)
@@ -79,7 +79,7 @@ namespace Breakout
         public static void MakeObstacles()
         {
             int x = 2; int y = 5;
-
+            hinder.Clear();
             for (int j = 0; j < 3; j++)
             {
                 for (int i = 0; i < 11; i++)
@@ -125,7 +125,6 @@ namespace Breakout
                 default:
                     break;
             }
-            //checkHitPoints();
             Write(VisualHealthState);
             ForegroundColor = ConsoleColor.White;
         }
@@ -136,6 +135,7 @@ namespace Breakout
             if (VisualHealthState== dead) return;
             hitPoints--;
             checkHitPoints();
+            CountNotDead();
         }
 
         //Hindret går sönder/försvinner
