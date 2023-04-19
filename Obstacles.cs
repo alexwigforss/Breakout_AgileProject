@@ -87,9 +87,8 @@ namespace Breakout
                 x = 2;
             }
         }
-<<<<<<< Updated upstream
 
-        public static void CountNotDead()
+        public static void CountProcent()
         {
             procent = ((hinder.Count - (decimal)notDead) / hinder.Count) * 100;           
         }
@@ -138,6 +137,7 @@ namespace Breakout
             {
                 VisualHealthState = dead;
                 notDead--;
+                CountProcent();
                 CheckObstacleEvent(); //NYI
             }
         }
