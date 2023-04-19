@@ -103,6 +103,7 @@ namespace Breakout
                 default:
                     break;
             }
+            checkHitPoints();
             Write(VisualHealthState);
             ForegroundColor = ConsoleColor.White;
         }
@@ -148,9 +149,6 @@ namespace Breakout
             foreach (Obstacles o in hinder)
             {
                 SetCursorPosition(o.xPosition, o.yPosition);
-               /* if(o.hitPoints == 0) {
-                    visual = "      ";
-                }*/
                 o.Visualize();
             }
         }
