@@ -19,6 +19,7 @@ namespace Breakout
         //träffar för att ta sönder
         int hitPoints = 1;
         public static int notDead = 0;
+        public static int Solids = 0;
         //public static double procent = 0;
         public static decimal procent;
         //färgkod
@@ -33,16 +34,7 @@ namespace Breakout
         public int YPosition { get => yPosition; set => yPosition = value; }
         public int XPosition { get => xPosition; set => xPosition = value; }
 
-        //old constructor
-        public Obstacles(string VisualHealtState, int scorePoints, int hitPoints, int x, int y, string colour = "green")
-        {
-            this.VisualHealthState = VisualHealtState;
-            this.scorePoints = scorePoints;
-            this.hitPoints = hitPoints;
-            this.colour = colour;
-            this.xPosition = x;
-            this.yPosition = y;
-        }
+ 
         //new constructor
         public Obstacles(int type, int x, int y)
         {
@@ -69,6 +61,7 @@ namespace Breakout
             this.yPosition = y;
             //Alla börjar med full health oavsett hitpoints
             this.VisualHealthState = visualFull;
+            notDead++;
         }
 
         static public List<Obstacles> hinder = new();
@@ -94,20 +87,12 @@ namespace Breakout
                 x = 2;
             }
         }
+<<<<<<< Updated upstream
 
         public static void CountNotDead()
         {
-            notDead = 0;
-            foreach (Obstacles o in hinder)
-            {
-                if (o.hitPoints > 0)
-                {
-                    notDead++;
-                }
-            }           
             procent = ((hinder.Count - (decimal)notDead) / hinder.Count) * 100;           
         }
-
         //Skriv ut hinder
         void Visualize()
         {
@@ -135,7 +120,6 @@ namespace Breakout
             if (VisualHealthState== dead) return;
             hitPoints--;
             checkHitPoints();
-            CountNotDead();
         }
 
         //Hindret går sönder/försvinner
@@ -153,7 +137,7 @@ namespace Breakout
             else if (hitPoints == 0)
             {
                 VisualHealthState = dead;
-                
+                notDead--;
                 CheckObstacleEvent(); //NYI
             }
         }
@@ -166,6 +150,7 @@ namespace Breakout
                 Program.lives++;
             }
             Program.score += this.scorePoints;
+           
             //TODO Lägg till fler events
         }
         //Positionera hinder

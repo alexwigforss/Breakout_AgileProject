@@ -57,14 +57,11 @@ namespace Breakout
             {
                 Ball b;
                 Obstacles.MakeObstacles();
-                Obstacles.CountNotDead();
 
-
-
-                b = new Ball(new V2(5, 25), new V2(1, -1));
+                b = new Ball(new V2(40, 10), new V2(0, 1));
 
                 timestep = new System.Timers.Timer();
-                timestep.Interval = 150;
+                timestep.Interval = 100;
                 timestep.Elapsed += TimerEventStep;
                 timestep.Start();
 
@@ -100,10 +97,10 @@ namespace Breakout
                     }
 
                     SetCursorPosition(75, 1);
-                    Write(steps_scince_start);
-
-                    SetCursorPosition(75, 3);
-                    Write(PlayerPad.CurrentFirstXPosition);
+                    Write(Obstacles.notDead);
+                    if (Obstacles.notDead <= 0) { running = false; }
+                    //SetCursorPosition(75, 3);
+                    //Write(PlayerPad.CurrentFirstXPosition);
 
                     p.PrintBoard();
                     GameBoard.DrawFrame();
@@ -115,7 +112,7 @@ namespace Breakout
                         bool died = b.Move();
                         if (died)
                         {
-                            b = new Ball(new V2(5, 2), new V2(1, 1));
+                            b = new Ball(new V2(40, 10), new V2(0, 1));
                             if (lives > 0)
                             {
                                 lives--;
@@ -142,6 +139,9 @@ namespace Breakout
                     }
                 }
 
+                PrintSuccesScreen();
+                GameMenu();
+
                 static void ReInit()
                 {
                     PlayerPad.CurrentFirstXPosition = 35;
@@ -149,6 +149,28 @@ namespace Breakout
                     lives = 3;
                     steps_scince_start = 0;
                     timestep.Stop();
+                }
+
+                static void PrintSuccesScreen()
+                {
+                    Clear();
+                    SetCursorPosition(0, 0);
+
+
+                    WriteLine(@"  ________              __    __  .__        ");
+                    WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
+                    WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
+                    WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
+                    WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
+                    WriteLine(@"    .___\/           \/                 ._./ ");
+                    WriteLine(@"  __| ___ __  ___  ______    ____   ____| |  ");
+                    WriteLine(@" / __ |  |  \ \  \/ \__  \  /    \ /    | |  ");
+                    WriteLine(@"/ /_/ |  |  /  \   / / __ \|   |  |   |  \|  ");
+                    WriteLine(@"\____ |____/    \_/ (____  |___|  |___|  __  ");
+                    WriteLine(@"     \/                  \/     \/     \/\/  ");
+                    WriteLine("Tryck valfri knapp för omstart!");
+                    ReadKey();
+                    ReInit();
                 }
             }
         }
