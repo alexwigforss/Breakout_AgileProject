@@ -18,8 +18,11 @@ namespace Breakout
         int yPosition;
         //träffar för att ta sönder
         int hitPoints = 1;
+        public static int notDead = 0;
+        //public static double procent = 0;
+        public static decimal procent;
         //färgkod
-        public string colour="white";
+        public string colour = "white";
         //utseende
         public string VisualHealthState;
         public static string dead = "      "; // borta 0 hp
@@ -43,19 +46,19 @@ namespace Breakout
         //new constructor
         public Obstacles(int type, int x, int y)
         {
-            if (type == 1)
+            if (type <= 40)
             {
                 this.scorePoints = 100;
-                this.hitPoints = 1;
+                this.hitPoints = 0;
                 this.colour = "green";
             }
-            if (type == 2)
+            else if (type > 40 && type < 90)
             {
                 this.scorePoints = 300;
                 this.hitPoints = 2;
                 this.colour = "blue";
             }
-            if (type == 3)
+            else if (type >= 90)
             {
                 this.scorePoints = 500;
                 this.hitPoints = 3;
@@ -69,26 +72,40 @@ namespace Breakout
         }
 
         static public List<Obstacles> hinder = new();
+
         static Random random = new Random();
 
 
         public static void MakeObstacles()
         {
-            int x = 1; int y = 5;
+            int x = 2; int y = 5;
 
             for (int j = 0; j < 3; j++)
             {
                 for (int i = 0; i < 11; i++)
                 {
-                    int type = random.Next(1, 4);
+                    int type = random.Next(0, 100);
 
                     Obstacles o = new Obstacles(type, x, y);
                     hinder.Add(o);
                     x += 7;
                 }
                 y = y + 2;
-                x = 1;
+                x = 2;
             }
+        }
+
+        public static void CountNotDead()
+        {
+            notDead = 0;
+            foreach (Obstacles o in hinder)
+            {
+                if (o.hitPoints > 0)
+                {
+                    notDead++;
+                }
+            }           
+            procent = ((decimal)notDead / hinder.Count) * 100;           
         }
 
         //Skriv ut hinder
@@ -108,7 +125,7 @@ namespace Breakout
                 default:
                     break;
             }
-            checkHitPoints();
+            //checkHitPoints();
             Write(VisualHealthState);
             ForegroundColor = ConsoleColor.White;
         }
@@ -138,7 +155,7 @@ namespace Breakout
                 VisualHealthState = dead;
                 
                 CheckObstacleEvent(); //NYI
-            }    
+            }
         }
 
         //Röda block ger 1 up
@@ -148,6 +165,7 @@ namespace Breakout
             {
                 Program.lives++;
             }
+            Program.score += this.scorePoints;
             //TODO Lägg till fler events
         }
         //Positionera hinder
