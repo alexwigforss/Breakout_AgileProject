@@ -17,6 +17,8 @@ namespace Breakout
     {
         public static int lives = 3;
         public static int score = 0;
+        public static int previousScore = 0;
+        public static bool gameover = false;
         static int steps_scince_start;
         public static System.Timers.Timer timestep;
         static void Main(string[] args)
@@ -54,13 +56,13 @@ namespace Breakout
             static void Game(PlayerPad p)
             {
                 Ball b;
-                Obstacles.MakeObstacles(); 
+                Obstacles.MakeObstacles();
                 Obstacles.CountNotDead();
-             
 
-              
+
+
                 b = new Ball(new V2(5, 25), new V2(1, -1));
-                
+
                 timestep = new System.Timers.Timer();
                 timestep.Interval = 150;
                 timestep.Elapsed += TimerEventStep;
@@ -120,9 +122,12 @@ namespace Breakout
                                 int rowToClear = 39;
                                 SetCursorPosition(0, rowToClear);
                                 Write(new string(' ', WindowWidth));
+                                gameover = false;
                             }
                             else
                             {
+                                gameover = true;
+                                previousScore= score;
                                 ReInit();
                                 GameMenu();
                             }
@@ -163,13 +168,27 @@ namespace Breakout
             steps_scince_start++;
         }
 
-        static void Welcome() 
-        { 
-            WriteLine("=============== BREAKDOWN ===============\n\n"+
-                      "(P)lay\n\n" +
-                      "(Q)uit\n\n" +
-                      "(H)elp\n\n" +
-                      "High(S)core\n");
+        static void Welcome()
+        {
+            if (gameover)
+            {
+                Write("=============== BREAKDOWN ===============\n\n" +
+                    " ___   _         ____  ___   ___   _     ___   ___    __    ___   ____ \r\n| | \\ | | |     | |_  / / \\ | |_) | |   / / \\ | |_)  / /\\  | | \\ | |_  \r\n|_|_/ \\_\\_/     |_|   \\_\\_/ |_| \\ |_|__ \\_\\_/ |_| \\ /_/--\\ |_|_/ |_|__\n\n" +
+                    $"Du klarade {(int)Obstacles.procent}%\n\n"+
+                    $"Du fick {previousScore} poäng\n\n" +
+                    "(P)lay\n\n" +
+                          "(Q)uit\n\n" +
+                          "(H)elp\n\n" +
+                          "High(S)core\n");
+            }
+            else
+            {
+                WriteLine("=============== BREAKDOWN ===============\n\n" +
+                          "(P)lay\n\n" +
+                          "(Q)uit\n\n" +
+                          "(H)elp\n\n" +
+                          "High(S)core\n");
+            }
         }
 
         private static void HelpMenu()

@@ -105,7 +105,7 @@ namespace Breakout
                     notDead++;
                 }
             }           
-            procent = ((decimal)notDead / hinder.Count) * 100;           
+            procent = ((hinder.Count - (decimal)notDead) / hinder.Count) * 100;           
         }
 
         //Skriv ut hinder
