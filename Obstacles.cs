@@ -21,11 +21,14 @@ namespace Breakout
         //färgkod
         public string colour="white";
         //utseende
-        string VisualHealthState;
+        public string VisualHealthState;
         public static string dead = "      "; // borta 0 hp
         public static string visualDamage = "▓▓▓▓▓▓"; //alt+178 2hp
         public static string visualBroken = "▒▒▒▒▒▒"; //177 1 hp
         public static string visualFull = "██████"; //219 3hp
+        public static int ckeckLimmit = 9;
+        public int YPosition { get => yPosition; set => yPosition = value; }
+        public int XPosition { get => xPosition; set => xPosition = value; }
 
         //old constructor
         public Obstacles(string VisualHealtState, int scorePoints, int hitPoints, int x, int y, string colour = "green")
@@ -67,6 +70,8 @@ namespace Breakout
 
         static public List<Obstacles> hinder = new();
         static Random random = new Random();
+
+
         public static void MakeObstacles()
         {
             int x = 1; int y = 5;
@@ -111,6 +116,7 @@ namespace Breakout
         //När bollen träffar hindret
         public void ballHit()
         {
+            if (VisualHealthState== dead) return;
             hitPoints--;
             checkHitPoints();
         }
@@ -130,6 +136,7 @@ namespace Breakout
             else if (hitPoints == 0)
             {
                 VisualHealthState = dead;
+                
                 CheckObstacleEvent(); //NYI
             }    
         }

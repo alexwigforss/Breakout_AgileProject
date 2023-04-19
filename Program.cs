@@ -55,8 +55,8 @@ namespace Breakout
             {
                 Ball b;
                 Obstacles.MakeObstacles();
-                b = new Ball(new V2(29, 31), new V2(1, 1));
-
+                b = new Ball(new V2(5, 25), new V2(1, -1));
+                
                 timestep = new System.Timers.Timer();
                 timestep.Interval = 150;
                 timestep.Elapsed += TimerEventStep;
@@ -109,7 +109,7 @@ namespace Breakout
                         bool died = b.Move();
                         if (died)
                         {
-                            b = new Ball(new V2(5, 5), new V2(1, 1));
+                            b = new Ball(new V2(5, 25), new V2(1, -1));
                             if (lives > 0)
                             {
                                 lives--;

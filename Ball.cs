@@ -11,6 +11,7 @@ namespace Breakout
     public class Ball
     {
         public static int hitPadIndex = 0;
+        public static int hitObstaclesIndex;
         static int width = 80;
         static int height = 40;
         V2 xy;
@@ -53,11 +54,13 @@ namespace Breakout
 
         public bool CheckWalls()
         {
-            if (xy.x + speed.x >= width || xy.x + speed.x < 0)
+            if (xy.x + speed.x >= width || xy.x + speed.x < 0) // Om den träffat någon vägg
                 speed.x *= -1;
-            if (xy.y + speed.y < 0)
+
+            if (xy.y + speed.y < 0) // Om träffat taket
                 speed.y *= -1;
-            else if ((xy.y + speed.y == height-5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
+            // Om träffat brädan
+            else if ((xy.y + speed.y == height - 5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
             {
                 hitPadIndex = xy.x - PlayerPad.CurrentFirstXPosition;
                 switch (hitPadIndex)
@@ -88,16 +91,43 @@ namespace Breakout
                 }
                 return false;
             }
+            // Om "Träffat" botten
             else if (xy.y + speed.y >= height)
             {
                 return true;
             }
             return false;
         }
+        public void CheckObstacles()
+        {
+
+            foreach (Obstacles obs in Obstacles.hinder)
+            {
+                if (xy.y - 1 == obs.YPosition && (xy.x >= obs.XPosition) && (xy.x < obs.XPosition + 6))
+                {
+                    if (obs.VisualHealthState == Obstacles.dead)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        obs.ballHit();
+                        speed.y *= -1;
+                        break;
+
+                    }
+                    //om hindret är dead, studsa inte bollen
+                }
+            }
+        }
 
         public bool Move()
         {
             bool died = CheckWalls();
+            if (xy.y + speed.y <= Obstacles.ckeckLimmit)
+            {
+                CheckObstacles();
+            }
             if (!died)
             {
                 xyPrev = xy;
@@ -111,7 +141,7 @@ namespace Breakout
         {
             SetCursorPosition(xy.x, xy.y);
             Write("O");
-            // Write(hitPadIndex);
+            // Write(hitObstaclesIndex);
         }
         public void PrintSelfClearTrail()
         {
