@@ -98,12 +98,12 @@ namespace Breakout
             }
             return false;
         }
-        public void CheckObstacles()
+        public void CheckObstacles(ref int ahead)
         {
 
             foreach (Obstacles obs in Obstacles.hinder)
             {
-                if (xy.y - 1 == obs.YPosition && (xy.x >= obs.XPosition) && (xy.x < obs.XPosition + 6))
+                if (xy.y + ahead == obs.YPosition && ((xy.x >= obs.XPosition) && (xy.x < obs.XPosition + 6)))
                 {
                     if (obs.VisualHealthState == Obstacles.dead)
                     {
@@ -114,7 +114,6 @@ namespace Breakout
                         obs.ballHit();
                         speed.y *= -1;
                         break;
-
                     }
                     //om hindret är dead, studsa inte bollen
                 }
@@ -123,11 +122,12 @@ namespace Breakout
 
         public bool Move()
         {
-            bool died = CheckWalls();
-            if (xy.y + speed.y <= Obstacles.ckeckLimmit)
+            int ahead = (speed.y < 0) ? -1 : 1;
+            if (xy.y + ahead <= Obstacles.ckeckLimmit)
             {
-                CheckObstacles();
+                CheckObstacles(ref ahead);
             }
+            bool died = CheckWalls();
             if (!died)
             {
                 xyPrev = xy;
@@ -140,8 +140,8 @@ namespace Breakout
         public void PrintSelf()
         {
             SetCursorPosition(xy.x, xy.y);
-            Write("O");
-            // Write(hitObstaclesIndex);
+            //Write("O");
+            Write(hitObstaclesIndex);
         }
         public void PrintSelfClearTrail()
         {

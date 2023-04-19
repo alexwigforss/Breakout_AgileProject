@@ -113,7 +113,7 @@ namespace Breakout
                         bool died = b.Move();
                         if (died)
                         {
-                            b = new Ball(new V2(5, 25), new V2(1, -1));
+                            b = new Ball(new V2(5, 2), new V2(1, 1));
                             if (lives > 0)
                             {
                                 lives--;
