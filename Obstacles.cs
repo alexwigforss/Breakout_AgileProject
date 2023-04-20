@@ -16,9 +16,10 @@ namespace Breakout
         // koordinater
         int xPosition;
         int yPosition;
+        public static int numberOfRows = 3;
         //träffar för att ta sönder
         int hitPoints = 1;
-        public static int notDead = 0;
+        private static int notDead = 0;
         public static int Solids = 0;
         //public static double procent = 0;
         public static decimal procent;
@@ -30,11 +31,13 @@ namespace Breakout
         public static string visualDamage = "▓▓▓▓▓▓"; //alt+178 2hp
         public static string visualBroken = "▒▒▒▒▒▒"; //177 1 hp
         public static string visualFull = "██████"; //219 3hp
-        public static int ckeckLimmit = 9;
+        private static int checkLimmit = 9;
         public int YPosition { get => yPosition; set => yPosition = value; }
         public int XPosition { get => xPosition; set => xPosition = value; }
+        public static int NotDead { get => notDead; set => notDead = value; }
+        public static int CheckLimmit { get => checkLimmit; set => checkLimmit = value; }
 
- 
+
         //new constructor
         public Obstacles(int type, int x, int y)
         {
@@ -73,7 +76,7 @@ namespace Breakout
         {
             int x = 2; int y = 5;
             hinder.Clear();
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < numberOfRows; j++)
             {
                 for (int i = 0; i < 11; i++)
                 {
@@ -83,7 +86,7 @@ namespace Breakout
                     hinder.Add(o);
                     x += 7;
                 }
-                y = y + 2;
+                y += 2;
                 x = 2;
             }
         }
@@ -91,6 +94,11 @@ namespace Breakout
         public static void CountProcent()
         {
             procent = ((hinder.Count - (decimal)notDead) / hinder.Count) * 100;           
+        }
+        public static int CountObstacles()
+        {
+            notDead = hinder.Count;
+            return hinder.Count;
         }
         //Skriv ut hinder
         void Visualize()

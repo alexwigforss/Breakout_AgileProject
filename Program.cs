@@ -19,10 +19,13 @@ namespace Breakout
         public static int score = 0;
         public static int previousScore = 0;
         public static bool gameover = false;
+        public static bool newgame = true;
         static int steps_scince_start;
         public static System.Timers.Timer timestep;
+        public PlayerPad bräda = new PlayerPad();
         static void Main(string[] args)
         {
+
             GameMenu();
 
             static void GameMenu()
@@ -33,6 +36,7 @@ namespace Breakout
                 string input = "";
                 Welcome();
                 do
+                // while (newgame)
                 {
                     Write("> ");
                     input = ReadLine();
@@ -48,7 +52,13 @@ namespace Breakout
                     else if (input.ToLower() == "s")
                         WriteLine("Not yet implemented, try another command");
 
-                } while (true);
+                }
+                while (true);
+            }
+            static void NextLevel()
+            {
+                PlayerPad bräda = new PlayerPad();
+                Game(bräda);
             }
 
             // GAME
@@ -57,19 +67,20 @@ namespace Breakout
             {
                 Ball b;
                 Obstacles.MakeObstacles();
+                Obstacles.CountObstacles();
+                b = new Ball(new V2(40, 30), new V2(0, 1));
 
-                b = new Ball(new V2(40, 10), new V2(0, 1));
 
                 timestep = new System.Timers.Timer();
-                timestep.Interval = 100;
+                timestep.Interval = 50;
                 timestep.Elapsed += TimerEventStep;
                 timestep.Start();
 
+                int sec = steps_scince_start;
                 bool running = true;
                 //SetupConsole();
                 Clear();
 
-                int sec = steps_scince_start;
                 b.PrintSelf();
 
                 // GAMELOOP
@@ -97,8 +108,13 @@ namespace Breakout
                     }
 
                     SetCursorPosition(75, 1);
-                    Write(Obstacles.notDead);
-                    if (Obstacles.notDead <= 0) { running = false; }
+                    Write(Obstacles.NotDead);
+
+                    if (Obstacles.NotDead <= 30)
+                    {
+                        NewLevelInit();
+                        running = false;
+                    }
                     //SetCursorPosition(75, 3);
                     //Write(PlayerPad.CurrentFirstXPosition);
 
@@ -112,7 +128,7 @@ namespace Breakout
                         bool died = b.Move();
                         if (died)
                         {
-                            b = new Ball(new V2(40, 10), new V2(0, 1));
+                            b = new Ball(new V2(40, 30), new V2(0, 1));
                             if (lives > 0)
                             {
                                 lives--;
@@ -121,10 +137,10 @@ namespace Breakout
                                 Write(new string(' ', WindowWidth));
                                 gameover = false;
                             }
-                            else
+                            else if (lives == 0)
                             {
                                 gameover = true;
-                                previousScore= score;
+                                previousScore = score;
                                 ReInit();
                                 GameMenu();
                             }
@@ -137,10 +153,12 @@ namespace Breakout
                         }
 
                     }
-                }
+                } // End of gameloop
+
 
                 PrintSuccesScreen();
-                GameMenu();
+                NextLevel();
+
 
                 static void ReInit()
                 {
@@ -149,9 +167,38 @@ namespace Breakout
                     lives = 3;
                     steps_scince_start = 0;
                     timestep.Stop();
+                    newgame = true;
+                }
+                static void NewLevelInit()
+                {
+                    PlayerPad.CurrentFirstXPosition = 35;
+                    steps_scince_start = 0;
+                    timestep.Stop();
+                    Obstacles.numberOfRows++;
+                    Obstacles.procent = 0;
+                    Obstacles.NotDead = 0;
+                    Obstacles.CheckLimmit += 2;
+                    newgame = false;
                 }
 
                 static void PrintSuccesScreen()
+                {
+                    Clear();
+                    SetCursorPosition(0, 0);
+
+                    WriteLine(@"  ________              __    __  .__        ");
+                    WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
+                    WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
+                    WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
+                    WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
+                    WriteLine();
+                    WriteLine("Du har klarat banan.");
+                    WriteLine("Tryck valfri knapp för nästa!");
+                    ReadKey();
+
+                }
+
+                static void PrintWinnerScreen()
                 {
                     Clear();
                     SetCursorPosition(0, 0);
@@ -196,7 +243,7 @@ namespace Breakout
             {
                 Write("=============== BREAKDOWN ===============\n\n" +
                     " ___   _         ____  ___   ___   _     ___   ___    __    ___   ____ \r\n| | \\ | | |     | |_  / / \\ | |_) | |   / / \\ | |_)  / /\\  | | \\ | |_  \r\n|_|_/ \\_\\_/     |_|   \\_\\_/ |_| \\ |_|__ \\_\\_/ |_| \\ /_/--\\ |_|_/ |_|__\n\n" +
-                    $"Du klarade {(int)Obstacles.procent}%\n\n"+
+                    $"Du klarade {(int)Obstacles.procent}%\n\n" +
                     $"Du fick {previousScore} poäng\n\n" +
                     "(P)lay\n\n" +
                           "(Q)uit\n\n" +

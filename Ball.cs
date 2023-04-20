@@ -11,13 +11,12 @@ namespace Breakout
     public class Ball
     {
         public static int hitPadIndex = 0;
-        public static int hitObstaclesIndex;
+        // public static int hitObstaclesIndex;
         static int width = 80;
         static int height = 40;
         V2 xy;
         V2 xyPrev;
         V2 speed;
-        bool? horizontal = null;
         int xyDiff, diffCount;
         public V2 Xy { get => xy; set => xy = value; }
 
@@ -31,21 +30,7 @@ namespace Breakout
             xy = XY;
             xyPrev = new V2(-1, -1); // börjar på minus så den inte suddar säg själv i första bildrutan.
             speed = SPEED;
-            if (speed.x != speed.y)
-            {
-                if (speed.x > speed.y)
-                {
-                    xyDiff = Math.Abs(speed.x) - Math.Abs(speed.y);
-                    diffCount = xyDiff;
-                    horizontal = true;
-                }
-                else if (speed.x < speed.y)
-                {
-                    xyDiff = Math.Abs(speed.y) - Math.Abs(speed.x);
-                    diffCount = xyDiff;
-                    horizontal = false;
-                }
-            }
+
         }
         public string XyToString()
         {
@@ -123,7 +108,7 @@ namespace Breakout
         public bool Move()
         {
             int ahead = (speed.y < 0) ? -1 : 1;
-            if (xy.y + ahead <= Obstacles.ckeckLimmit)
+            if (xy.y + ahead <= Obstacles.CheckLimmit)
             {
                 CheckObstacles(ref ahead);
             }
@@ -140,8 +125,7 @@ namespace Breakout
         public void PrintSelf()
         {
             SetCursorPosition(xy.x, xy.y);
-            //Write("O");
-            Write(hitObstaclesIndex);
+            Write("O");
         }
         public void PrintSelfClearTrail()
         {

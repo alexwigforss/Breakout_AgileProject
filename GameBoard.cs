@@ -32,7 +32,7 @@ namespace Breakout
             Write($"PROGRESS: {(int)Obstacles.procent}%"); // procent variabel
 
             SetCursorPosition(BottomRightCorner.x + 3, 8);
-            Write($"OBSTACLES: {Obstacles.notDead}/{Obstacles.hinder.Count}");
+            Write($"OBSTACLES: {Obstacles.NotDead}/{Obstacles.hinder.Count}");
         }
 
         public static void DrawBrickZoneCorners()
