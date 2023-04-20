@@ -3,84 +3,54 @@ namespace Breakout
 {
     public static class GameBoard
     {
-        public static int margin = 20;
-        public static int width = 80;
-        public static int height = 40;
 
-        static V2 topLeftCorner = new V2(1, 1);
-        static V2 bottomRightCorner = new V2(79, 39);
+        private static V2 topLeftCorner = new(1, 1);
+        private static V2 bottomRightCorner = new(79, 39);
+        public static V2 TopLeftCorner { get => topLeftCorner; }
+        public static V2 BottomRightCorner { get => bottomRightCorner;}
 
-        static V2 topLeftBrickZoneCorner = new V2(1, 5);
-        static V2 bottomRightBrickZoneCorner = new V2(79, 19);
-
-        public static int Width { get => width; set => width = value; }
-        public static int Height { get => height; set => height = value; }
-        public static V2 TopLeftCorner { get => topLeftCorner; set => topLeftCorner = value; }
-        public static V2 BottomRightCorner { get => bottomRightCorner; set => bottomRightCorner = value; }
-        public static V2 TopLeftBrickZoneCorner { get => topLeftBrickZoneCorner; set => topLeftBrickZoneCorner = value; }
-        public static V2 BottomRightBrickZoneCorner { get => bottomRightBrickZoneCorner; set => bottomRightBrickZoneCorner = value; }
-
+        // Skriver statistik bredvid spelplanen
         public static void DrawStats(int lives, int score)
         {
-            SetCursorPosition(BottomRightCorner.x + 3, 2);
+            SetCursorPosition(BottomRightCorner.X + 3, 2);
             Write($"LIVES: {lives}");
 
-            SetCursorPosition(BottomRightCorner.x + 3, 4);
+            SetCursorPosition(BottomRightCorner.X + 3, 4);
             Write($"SCORE: {score}");
 
-            SetCursorPosition(BottomRightCorner.x + 3, 6);
-            Write($"PROGRESS: {(int)Obstacles.procent}%"); // procent variabel
+            SetCursorPosition(BottomRightCorner.X + 3, 6);
+            Write($"PROGRESS: {(int)Obstacles.Procent}%"); 
 
-            SetCursorPosition(BottomRightCorner.x + 3, 8);
-            Write($"OBSTACLES: {Obstacles.NotDead}/{Obstacles.hinder.Count}");
-        }
-
-        public static void DrawBrickZoneCorners()
-        {
-            SetCursorPosition(TopLeftBrickZoneCorner.x, TopLeftBrickZoneCorner.y);
-            Obstacles.PlaceObstacles();
-
-            //skriv ut
-            SetCursorPosition(BottomRightBrickZoneCorner.x, BottomRightBrickZoneCorner.y);
-            Write("X");
+            SetCursorPosition(BottomRightCorner.X + 3, 8);
+            Write($"OBSTACLES: {Obstacles.Active}/{Obstacles.hinder.Count}");
         }
 
         public static void DrawFrame()
         {
-            //SetCursorPosition(0, 0);
-            //Write("┌");
-
-            SetCursorPosition(BottomRightCorner.x + 1, 0);
+            SetCursorPosition(BottomRightCorner.X + 1, 0);
             Write("┬");
 
-            SetCursorPosition(BottomRightCorner.x + margin, 0);
+            SetCursorPosition(BottomRightCorner.X + Program.margin, 0);
             Write("┐");
 
-            SetCursorPosition(BottomRightCorner.x + 1, BottomRightCorner.y);
+            SetCursorPosition(BottomRightCorner.X + 1, BottomRightCorner.Y);
             Write("└");
 
-            SetCursorPosition(BottomRightCorner.x + margin, BottomRightCorner.y);
+            SetCursorPosition(BottomRightCorner.X + Program.margin, BottomRightCorner.Y);
             Write("┘");
 
-            for (int i = 1; i < BottomRightCorner.y; i++)
+            for (int i = 1; i < BottomRightCorner.Y; i++)
             {
-                SetCursorPosition(BottomRightCorner.x + 1, i);
+                SetCursorPosition(BottomRightCorner.X + 1, i);
                 Write("│");
-                //SetCursorPosition(0, i);
-                //Write("│");
-                SetCursorPosition(BottomRightCorner.x + margin, i);
+                SetCursorPosition(BottomRightCorner.X + Program.margin, i);
                 Write("│");
             }
-            for (int i = 1; i <= BottomRightCorner.x; i++)
-            {
-                //SetCursorPosition(i, 0);
-                //Write("─");
-            }
-            for (int i = BottomRightCorner.x + 2; i < BottomRightCorner.x + margin; i++)
+            for (int i = BottomRightCorner.X + 2; i < BottomRightCorner.X + Program.margin; i++)
             {
                 SetCursorPosition(i, 0);
                 Write("─");
-                SetCursorPosition(i, BottomRightCorner.y);
+                SetCursorPosition(i, BottomRightCorner.Y);
                 Write("─");
             }
         }

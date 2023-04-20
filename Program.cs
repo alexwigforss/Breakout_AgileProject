@@ -7,244 +7,254 @@ namespace Breakout
     // Integral vektor för position och hastighet i x & y-led
     public struct V2
     {
-        public int x;
-        public int y;
+        private int x;
+        private int y;
+
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
+
         public V2(int x, int y) { this.x = x; this.y = y; }
-        public V2(V2 xy) { this.x = xy.x; this.y = xy.y; }
+        public V2(V2 xy) { this.x = xy.X; this.y = xy.Y; }
     }
 
     public class Program
     {
-        public static int lives = 3;
-        public static int score = 0;
-        public static int previousScore = 0;
-        public static bool gameover = false;
+        private static int lives = 3;
+        private static int score = 0;
+        private static int previousScore = 0;
+        private static bool gameover = false;
+        private static int steps_since_start;
+        private static System.Timers.Timer timestep = new();
+        public const int windowWidth = 80;
+        public const int windowHeight = 40;
+        public const int margin = 20;
+
+
         public static bool newgame = true;
-        static int steps_scince_start;
-        public static System.Timers.Timer timestep;
-        public PlayerPad bräda = new PlayerPad();
+
+        public static PlayerPad bräda = new();
+
+        public static int Lives { get => lives; set => lives = value; }
+        public static int Score { get => score; set => score = value; }
+        public static int PreviousScore { get => previousScore; set => previousScore = value; }
+        public static bool Gameover { get => gameover; set => gameover = value; }
+        public static int Steps_since_start { get => steps_since_start; set => steps_since_start = value; }
+        public static System.Timers.Timer Timestep { get => timestep; set => timestep = value; }
+
         static void Main(string[] args)
         {
 
             GameMenu();
-
-            static void GameMenu()
-            {
-                SetupConsole();
-                Clear();
-                SetCursorPosition(0, 0);
-                string input = "";
-                Welcome();
-                do
-                // while (newgame)
-                {
-                    Write("> ");
-                    input = ReadLine();
-                    if (input.ToLower() == "p")
-                    {
-                        PlayerPad bräda = new PlayerPad();
-                        Game(bräda);
-                    }
-                    else if (input.ToLower() == "q")
-                        Environment.Exit(0);
-                    else if (input.ToLower() == "h")
-                        HelpMenu();
-                    else if (input.ToLower() == "s")
-                        WriteLine("Not yet implemented, try another command");
-
-                }
-                while (true);
-            }
-            static void NextLevel()
-            {
-                PlayerPad bräda = new PlayerPad();
-                Game(bräda);
-            }
-
-            // GAME
-
-            static void Game(PlayerPad p)
-            {
-                Ball b;
-                Obstacles.MakeObstacles();
-                Obstacles.CountObstacles();
-                b = new Ball(new V2(40, 30), new V2(0, 1));
-
-
-                timestep = new System.Timers.Timer();
-                timestep.Interval = 50;
-                timestep.Elapsed += TimerEventStep;
-                timestep.Start();
-
-                int sec = steps_scince_start;
-                bool running = true;
-                //SetupConsole();
-                Clear();
-
-                b.PrintSelf();
-
-                // GAMELOOP
-                while (running)
-                {
-                    //läser knapptryckningar för brädet
-                    if (Console.KeyAvailable)
-                    {
-                        ConsoleKeyInfo key = Console.ReadKey(true);
-                        switch (key.Key)
-                        {
-                            case ConsoleKey.LeftArrow:
-                                p.MoveLeft();
-                                break;
-                            case ConsoleKey.RightArrow:
-                                p.MoveRight();
-                                break;
-                            case ConsoleKey.Escape:
-                                ReInit();
-                                GameMenu();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    SetCursorPosition(75, 1);
-                    Write(Obstacles.NotDead);
-
-                    if (Obstacles.NotDead <= 30)
-                    {
-                        NewLevelInit();
-                        running = false;
-                    }
-                    //SetCursorPosition(75, 3);
-                    //Write(PlayerPad.CurrentFirstXPosition);
-
-                    p.PrintBoard();
-                    GameBoard.DrawFrame();
-                    GameBoard.DrawBrickZoneCorners();
-                    GameBoard.DrawStats(lives, score);
-
-                    if (steps_scince_start > sec)
-                    {
-                        bool died = b.Move();
-                        if (died)
-                        {
-                            b = new Ball(new V2(40, 30), new V2(0, 1));
-                            if (lives > 0)
-                            {
-                                lives--;
-                                int rowToClear = 39;
-                                SetCursorPosition(0, rowToClear);
-                                Write(new string(' ', WindowWidth));
-                                gameover = false;
-                            }
-                            else if (lives == 0)
-                            {
-                                gameover = true;
-                                previousScore = score;
-                                ReInit();
-                                GameMenu();
-                            }
-                        }
-                        else if (!died)
-                        {
-                            sec = steps_scince_start;
-                            b.PrintSelfClearTrail();
-
-                        }
-
-                    }
-                } // End of gameloop
-
-
-                PrintSuccesScreen();
-                NextLevel();
-
-
-                static void ReInit()
-                {
-                    PlayerPad.CurrentFirstXPosition = 35;
-                    score = 0;
-                    lives = 3;
-                    steps_scince_start = 0;
-                    timestep.Stop();
-                    newgame = true;
-                }
-                static void NewLevelInit()
-                {
-                    PlayerPad.CurrentFirstXPosition = 35;
-                    steps_scince_start = 0;
-                    timestep.Stop();
-                    Obstacles.numberOfRows++;
-                    Obstacles.procent = 0;
-                    Obstacles.NotDead = 0;
-                    Obstacles.CheckLimmit += 2;
-                    newgame = false;
-                }
-
-                static void PrintSuccesScreen()
-                {
-                    Clear();
-                    SetCursorPosition(0, 0);
-
-                    WriteLine(@"  ________              __    __  .__        ");
-                    WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
-                    WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
-                    WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
-                    WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
-                    WriteLine();
-                    WriteLine("Du har klarat banan.");
-                    WriteLine("Tryck valfri knapp för nästa!");
-                    ReadKey();
-
-                }
-
-                static void PrintWinnerScreen()
-                {
-                    Clear();
-                    SetCursorPosition(0, 0);
-
-
-                    WriteLine(@"  ________              __    __  .__        ");
-                    WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
-                    WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
-                    WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
-                    WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
-                    WriteLine(@"    .___\/           \/                 ._./ ");
-                    WriteLine(@"  __| ___ __  ___  ______    ____   ____| |  ");
-                    WriteLine(@" / __ |  |  \ \  \/ \__  \  /    \ /    | |  ");
-                    WriteLine(@"/ /_/ |  |  /  \   / / __ \|   |  |   |  \|  ");
-                    WriteLine(@"\____ |____/    \_/ (____  |___|  |___|  __  ");
-                    WriteLine(@"     \/                  \/     \/     \/\/  ");
-                    WriteLine("Tryck valfri knapp för omstart!");
-                    ReadKey();
-                    ReInit();
-                }
-            }
         }
 
-        static int windowWidth = 80;
-        static int windowHeight = 40;
+        static void GameMenu()
+        {
+            SetupConsole();
+            Clear();
+            SetCursorPosition(0, 0);
+            string? input;
+
+            Welcome();
+            // Meny-loop
+            do
+            {
+                Write("> ");
+                input = ReadLine();
+                if (input.ToLower() == "p")
+                {
+                    bräda = new();
+                    Game(bräda);
+                }
+                else if (input.ToLower() == "q")
+                    Environment.Exit(0);
+                else if (input.ToLower() == "h")
+                    HelpMenu();
+                else if (input.ToLower() == "s")
+                    WriteLine("Not yet implemented, try another command");
+
+            }
+            while (true);
+        }
+        static void NextLevel()
+        {
+            bräda = new();
+            Game(bräda);
+        }
+
+        // Startar nytt spel
+        static void Game(PlayerPad pad)
+        {
+
+            bool running = true;
+            int sec = Steps_since_start;
+
+            // Startar ny tidtagning
+            Timestep = new();
+            Timestep.Interval = 100;
+            Timestep.Elapsed += TimerEventStep;
+            Timestep.Start();
+
+            Clear();
+            Ball ball = new(new V2(40, 10), new V2(0, 1));
+            Obstacles.MakeObstacles();
+            Obstacles.CountObstacles();
+            GameBoard.DrawFrame();
+            ball.PrintSelf();
+
+            // Spel-loop
+            while (running)
+            {
+                Obstacles.PlaceObstacles();
+
+                // Läser knapptryckningar för brädet
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.LeftArrow:
+                            pad.MoveLeft();
+                            break;
+                        case ConsoleKey.RightArrow:
+                            pad.MoveRight();
+                            break;
+                        case ConsoleKey.Escape:
+                            ReInit();
+                            GameMenu();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                pad.PrintBoard();
+                GameBoard.DrawStats(Lives, Score);
+
+                // Avslutar banan när 9 hinder är borta
+                if (Obstacles.Active <= 30)
+                {
+                    NewLevelInit();
+                    running = false;
+                }
+
+                if (Steps_since_start > sec)
+                {
+                    bool died = ball.Move();
+                    if (died)
+                    {
+                        ball = new(new V2(40, 10), new V2(0, 1));
+                        if (Lives > 0)
+                        {
+                            Lives--;
+                            int rowToClear = 39;
+                            SetCursorPosition(0, rowToClear);
+                            Write(new string(' ', WindowWidth));
+                            Gameover = false;
+                        }
+                        else if (Lives == 0)
+                        {
+                            Gameover = true;
+                            PreviousScore = Score;
+
+                            // TODO Print game over ( not success ) screen
+                            ReInit();
+                            GameMenu();
+                        }
+                    }
+                    else if (!died)
+                    {
+                        sec = Steps_since_start;
+                        ball.PrintSelfClearTrail();
+
+                    }
+
+                }
+            }
+
+            PrintSuccesScreen();
+            NextLevel();
+
+            static void ReInit()
+            {
+                PlayerPad.CurrentFirstXPosition = 35;
+                Score = 0;
+                Lives = 3;
+                steps_since_start = 0;
+                Timestep.Stop();
+                newgame = true;
+            }
+            static void NewLevelInit()
+            {
+                PlayerPad.CurrentFirstXPosition = 35;
+                steps_since_start = 0;
+                Timestep.Stop();
+                Obstacles.numberOfRows++;
+                Obstacles.Procent = 0;
+                Obstacles.Active = 0;
+                Obstacles.CheckLimmit += 2;
+                newgame = false;
+            }
+
+            static void PrintSuccesScreen()
+            {
+                Clear();
+                SetCursorPosition(0, 0);
+
+                WriteLine(@"  ________              __    __  .__        ");
+                WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
+                WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
+                WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
+                WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
+                WriteLine();
+                WriteLine("Du har klarat banan.");
+                WriteLine("Tryck valfri knapp för nästa!");
+                ReadKey();
+
+            }
+
+            static void PrintWinnerScreen()
+            {
+                Clear();
+                SetCursorPosition(0, 0);
+
+
+                WriteLine(@"  ________              __    __  .__        ");
+                WriteLine(@" /  _________________ _/  |__/  |_|__| ______");
+                WriteLine(@"/   \  __\_  __ \__  \\   __\   __|  |/  ___/");
+                WriteLine(@"\    \_\  |  | \// __ \|  |  |  | |  |\___ \ ");
+                WriteLine(@" \______  |__|  (____  |__|  |__| |__/____  >");
+                WriteLine(@"    .___\/           \/                 ._./ ");
+                WriteLine(@"  __| ___ __  ___  ______    ____   ____| |  ");
+                WriteLine(@" / __ |  |  \ \  \/ \__  \  /    \ /    | |  ");
+                WriteLine(@"/ /_/ |  |  /  \   / / __ \|   |  |   |  \|  ");
+                WriteLine(@"\____ |____/    \_/ (____  |___|  |___|  __  ");
+                WriteLine(@"     \/                  \/     \/     \/\/  ");
+                WriteLine("Tryck valfri knapp för omstart!");
+                ReadKey();
+                ReInit();
+            }
+        }
 
         private static void SetupConsole()
         {
             SetWindowSize(1, 1);
-            SetBufferSize(windowWidth + GameBoard.margin, windowHeight);
-            SetWindowSize(windowWidth + GameBoard.margin, windowHeight);
+            SetBufferSize(windowWidth + margin, windowHeight);
+            SetWindowSize(windowWidth + margin, windowHeight);
             CursorVisible = false;
         }
         public static void TimerEventStep(Object source, System.Timers.ElapsedEventArgs e)
         {
-            steps_scince_start++;
+            Steps_since_start++;
         }
 
         static void Welcome()
         {
-            if (gameover)
+            if (Gameover)
             {
                 Write("=============== BREAKDOWN ===============\n\n" +
                     " ___   _         ____  ___   ___   _     ___   ___    __    ___   ____ \r\n| | \\ | | |     | |_  / / \\ | |_) | |   / / \\ | |_)  / /\\  | | \\ | |_  \r\n|_|_/ \\_\\_/     |_|   \\_\\_/ |_| \\ |_|__ \\_\\_/ |_| \\ /_/--\\ |_|_/ |_|__\n\n" +
-                    $"Du klarade {(int)Obstacles.procent}%\n\n" +
-                    $"Du fick {previousScore} poäng\n\n" +
+                    $"Du klarade {(int)Obstacles.Procent}%\n\n" +
+                    $"Du fick {PreviousScore} poäng\n\n" +
                     "(P)lay\n\n" +
                           "(Q)uit\n\n" +
                           "(H)elp\n\n" +

@@ -5,49 +5,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Console;
+
 namespace Breakout
 {
-
     public class Ball
     {
-        public static int hitPadIndex = 0;
-        // public static int hitObstaclesIndex;
-        static int width = 80;
-        static int height = 40;
-        V2 xy;
-        V2 xyPrev;
+        private static int hitPadIndex = 0;
+
+        V2 xyPosition;
+        V2 xyPrevPosition;
         V2 speed;
-        int xyDiff, diffCount;
-        public V2 Xy { get => xy; set => xy = value; }
+        public V2 XyPosition { get => xyPosition; set => xyPosition = value; }
 
-        /// <summary>
-        /// Boll Constructor
-        /// </summary>
-        /// <param name="xy">position cordinates</param>
-        /// <param name="speed">movement force</param>
-        public Ball(V2 XY, V2 SPEED)
+        // Konstruktor
+        public Ball(V2 position, V2 riktning)
         {
-            xy = XY;
-            xyPrev = new V2(-1, -1); // börjar på minus så den inte suddar säg själv i första bildrutan.
-            speed = SPEED;
-
-        }
-        public string XyToString()
-        {
-            return xy.x.ToString() + xy.y.ToString();
+            xyPosition = position;
+            xyPrevPosition = new V2(-1, -1); // Börjar på minus så den inte suddar sig själv i första bildrutan
+            speed = riktning;
         }
 
         public bool CheckWalls()
         {
-            if (xy.x + speed.x >= width || xy.x + speed.x < 0) // Om den träffat någon vägg
-                speed.x *= -1;
+            if (xyPosition.X + speed.X >= Program.windowWidth || xyPosition.X + speed.X < 0) // Om den träffat någon vägg
+                speed.X *= -1;
 
-            if (xy.y + speed.y < 0) // Om träffat taket
-                speed.y *= -1;
+            if (xyPosition.Y + speed.Y < 0) // Om träffat taket
+                speed.Y *= -1;
             // Om träffat brädan
-            else if ((xy.y + speed.y == height - 5) && ((xy.x >= PlayerPad.CurrentFirstXPosition) && (xy.x <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
+            else if ((xyPosition.Y + speed.Y == Program.windowHeight - 5) && ((xyPosition.X >= PlayerPad.CurrentFirstXPosition) && (xyPosition.X <= PlayerPad.CurrentFirstXPosition + PlayerPad.Board.Length)))
             {
-                hitPadIndex = xy.x - PlayerPad.CurrentFirstXPosition;
+                hitPadIndex = xyPosition.X - PlayerPad.CurrentFirstXPosition;
                 switch (hitPadIndex)
                 {
                     case 0:
@@ -77,7 +65,7 @@ namespace Breakout
                 return false;
             }
             // Om "Träffat" botten
-            else if (xy.y + speed.y >= height)
+            else if (xyPosition.Y + speed.Y >= Program.windowHeight)
             {
                 return true;
             }
@@ -85,46 +73,44 @@ namespace Breakout
         }
         public void CheckObstacles(ref int ahead)
         {
-
             foreach (Obstacles obs in Obstacles.hinder)
             {
-                if (xy.y + ahead == obs.YPosition && ((xy.x >= obs.XPosition) && (xy.x < obs.XPosition + 6)))
+                if (xyPosition.Y + ahead == obs.YPosition && ((xyPosition.X >= obs.XPosition) && (xyPosition.X < obs.XPosition + 6)))
                 {
-                    if (obs.VisualHealthState == Obstacles.dead)
+                    if (obs.VisualHealthState == Obstacles.Dead)
                     {
                         return;
                     }
                     else
                     {
-                        obs.ballHit();
-                        speed.y *= -1;
+                        obs.BallHit();
+                        speed.Y *= -1;
                         break;
                     }
-                    //om hindret är dead, studsa inte bollen
                 }
             }
         }
 
         public bool Move()
         {
-            int ahead = (speed.y < 0) ? -1 : 1;
-            if (xy.y + ahead <= Obstacles.CheckLimmit)
+            int ahead = (speed.Y < 0) ? -1 : 1;
+            if (xyPosition.Y + ahead <= Obstacles.CheckLimmit)
             {
                 CheckObstacles(ref ahead);
             }
             bool died = CheckWalls();
             if (!died)
             {
-                xyPrev = xy;
-                xy.x += speed.x;
-                xy.y += speed.y;
+                xyPrevPosition = xyPosition;
+                xyPosition.X += speed.X;
+                xyPosition.Y += speed.Y;
             }
             return died;
         }
 
         public void PrintSelf()
         {
-            SetCursorPosition(xy.x, xy.y);
+            SetCursorPosition(xyPosition.X, xyPosition.Y);
             Write("O");
         }
         public void PrintSelfClearTrail()
@@ -134,7 +120,7 @@ namespace Breakout
         }
         public void ClearTrail()
         {
-            SetCursorPosition(xyPrev.x, xyPrev.y);
+            SetCursorPosition(xyPrevPosition.X, xyPrevPosition.Y);
             Write(" ");
         }
     }

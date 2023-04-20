@@ -9,15 +9,9 @@ namespace Breakout
 {
     public class HighScoreEntry
     {
-        KeyValuePair<string, int> Topp1;
-        KeyValuePair<string, int> Topp2;
-        KeyValuePair<string, int> Topp3;
+
         public string Name;
         public int HSScore;
-        public HighScoreEntry(string Name, int HSScore)
-        {
-            Topp1 = new(Name, HSScore);
-        }
         public HighScoreEntry(string lineFromFile)
         {
             string[] field = lineFromFile.Split(",");

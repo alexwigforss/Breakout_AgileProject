@@ -11,34 +11,27 @@ namespace Breakout
 {
     public class Obstacles
     {
-        //poängvärde
-        int scorePoints;
-        // koordinater
-        int xPosition;
-        int yPosition;
-        public static int numberOfRows = 3;
-        //träffar för att ta sönder
-        int hitPoints = 1;
-        private static int notDead = 0;
-        public static int Solids = 0;
-        //public static double procent = 0;
-        public static decimal procent;
-        //färgkod
-        public string colour = "white";
-        //utseende
-        public string VisualHealthState;
-        public static string dead = "      "; // borta 0 hp
-        public static string visualDamage = "▓▓▓▓▓▓"; //alt+178 2hp
-        public static string visualBroken = "▒▒▒▒▒▒"; //177 1 hp
-        public static string visualFull = "██████"; //219 3hp
+        public static int numberOfRows = 3; 
+      
+        public static int Solids = 0;       
+      
         private static int checkLimmit = 9;
-        public int YPosition { get => yPosition; set => yPosition = value; }
-        public int XPosition { get => xPosition; set => xPosition = value; }
-        public static int NotDead { get => notDead; set => notDead = value; }
+
         public static int CheckLimmit { get => checkLimmit; set => checkLimmit = value; }
 
+        private string visualHealthState;
+        // Poängvärde
+        private int scorePoints;
+        // Koordinater
+        private int xPosition;
+        private int yPosition;
+        // Träffar för att ta sönder
+        private int hitPoints = 1;
+        // Mängd hinder
+        private static int active = 0;
+        private static decimal procent;
 
-        //new constructor
+        // Konstruktor
         public Obstacles(int type, int x, int y)
         {
             if (type <= 40)
@@ -63,29 +56,40 @@ namespace Breakout
             this.xPosition = x;
             this.yPosition = y;
             //Alla börjar med full health oavsett hitpoints
-            this.VisualHealthState = visualFull;
-            notDead++;
+            this.visualHealthState = visualFull;
+            active++;
         }
+
+        // Utseende
+        private const string dead = "      "; // 0 hp, blanksteg
+        private const string visualFull = "██████"; // 3 hp, tecken 219
+        private const string visualDamage = "▓▓▓▓▓▓"; // 2 hp, tecken 178
+        private const string visualBroken = "▒▒▒▒▒▒"; // 1 hp, tecken177
+        private string colour = "white";
 
         static public List<Obstacles> hinder = new();
 
-        static Random random = new Random();
-
-
         public static void MakeObstacles()
         {
-            int x = 2; int y = 5;
+            Random random = new();
+            int x = 2; 
+            int y = 5;
             hinder.Clear();
+
+            // Sätt hindrets position på y-axel
             for (int j = 0; j < numberOfRows; j++)
             {
+                // Sätt hindrets position på x-axeln
                 for (int i = 0; i < 11; i++)
                 {
                     int type = random.Next(0, 100);
-
-                    Obstacles o = new Obstacles(type, x, y);
+                    Obstacles o = new(type, x, y);
                     hinder.Add(o);
                     x += 7;
                 }
+
+                // Ny rad
+
                 y += 2;
                 x = 2;
             }
@@ -93,14 +97,69 @@ namespace Breakout
 
         public static void CountProcent()
         {
-            procent = ((hinder.Count - (decimal)notDead) / hinder.Count) * 100;           
+            Procent = ((hinder.Count - (decimal)Active) / hinder.Count) * 100;           
         }
+
         public static int CountObstacles()
         {
-            notDead = hinder.Count;
+            Active = hinder.Count;
             return hinder.Count;
         }
         //Skriv ut hinder
+
+
+        // När bollen träffar hindret
+        public void BallHit()
+        {
+            if (visualHealthState== dead) return;
+            hitPoints--;
+            CheckHitPoints();
+        }
+
+        // Ändra hindrets status
+        public void CheckHitPoints()
+        {
+            if (hitPoints == 2)
+            {
+                visualHealthState = visualDamage;
+            }
+            else if (hitPoints == 1)
+            {
+                visualHealthState = visualBroken;
+            }
+            else if (hitPoints == 0)
+            {
+                visualHealthState = dead;
+                active--;
+                CountProcent();
+                CheckObstacleEvent();
+            }
+        }
+
+        // Röda block ger 1 up
+        public void CheckObstacleEvent()
+        {
+            if (colour == "red")
+            {
+                Program.Lives++;
+            }
+            Program.Score += scorePoints;
+           
+            //TODO Lägg till fler events
+        }
+
+        // Positionera hinder
+        public static void PlaceObstacles()
+        {
+            foreach (Obstacles obs in hinder)
+            {
+                SetCursorPosition(obs.xPosition, obs.yPosition);
+                obs.Visualize();
+            }
+        }
+
+        // Skriv ut hinder
+
         void Visualize()
         {
             switch (colour)
@@ -117,58 +176,18 @@ namespace Breakout
                 default:
                     break;
             }
-            Write(VisualHealthState);
+            Write(visualHealthState);
             ForegroundColor = ConsoleColor.White;
         }
 
-        //När bollen träffar hindret
-        public void ballHit()
-        {
-            if (VisualHealthState== dead) return;
-            hitPoints--;
-            checkHitPoints();
-        }
-
-        //Hindret går sönder/försvinner
-        public void checkHitPoints()
-        {
-            //om den hade 3 hp, blir träffad en gång
-            if (hitPoints == 2)
-            {
-                VisualHealthState = visualDamage;
-            }
-            else if (hitPoints == 1)
-            {
-                VisualHealthState = visualBroken;
-            }
-            else if (hitPoints == 0)
-            {
-                VisualHealthState = dead;
-                notDead--;
-                CountProcent();
-                CheckObstacleEvent(); //NYI
-            }
-        }
-
-        //Röda block ger 1 up
-        public void CheckObstacleEvent()
-        {
-            if (colour == "red")
-            {
-                Program.lives++;
-            }
-            Program.score += this.scorePoints;
-           
-            //TODO Lägg till fler events
-        }
-        //Positionera hinder
-        public static void PlaceObstacles()
-        {
-            foreach (Obstacles o in hinder)
-            {
-                SetCursorPosition(o.xPosition, o.yPosition);
-                o.Visualize();
-            }
-        }
+        // Get/set
+        public int YPosition { get => yPosition; set => yPosition = value; }
+        public int XPosition { get => xPosition; set => xPosition = value; }
+        public string VisualHealthState { get => visualHealthState; set => visualHealthState = value; }
+        public static int Active { get => active; set => active = value; }
+        public static string Dead { get => dead; }
+        public int HitPoints { get => hitPoints; set => hitPoints = value; }
+        public static decimal Procent { get => procent; set => procent = value; }
+        public string Colour { get => colour; set => colour = value; }
     }
 }

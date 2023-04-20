@@ -10,12 +10,12 @@ namespace Breakout
 {
     public class PlayerPad
     {
-        static int leftWall = 0;
-        static int rightWall = 80;
+        const int leftWall = 0;
+        const int rightWall = 80;
         static string board = "▀▀▀▀██▀▀▀▀";
-        static int currentFirstXPosition = 35;
+        private static int currentFirstXPosition = 35;
         public static int CurrentFirstXPosition { get => currentFirstXPosition; set => currentFirstXPosition = value; }
-        public static string Board { get => board; set => board = value; }
+        public static string Board { get => board; }
 
         public void PrintBoard()
         {
@@ -23,7 +23,7 @@ namespace Breakout
             Write(board);
         }
 
-       //check for walls
+       // check for walls
         public bool CheckForWalls(int x)
         {
             if (x == -1 && currentFirstXPosition == leftWall)
